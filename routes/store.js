@@ -4,15 +4,15 @@ var con = require('../database');
 var shortid = require('shortid');
 
 router.get('/', async function(req, res, next) {
-    [menuItems, fields] = await con.promise().query('SELECT * FROM MenuItem');
-    res.render('menuItem', {menuItems: menuItems})
+    [stores, fields] = await con.promise().query('SELECT * FROM Store');
+    res.render('store', {stores: stores})
 });
 
 router.post('/', async function(req, res, next) {
     var name = req.body.name
-    var price = req.body.price
-    var query = 'INSERT INTO MenuItem(id, name, price) VALUES (\"'+
-    shortid.generate()+'\", \"'+name+'\", '+price+');';
+    var id = shortid.generate()
+    var query = 'INSERT INTO Store(id, name) VALUES (\"'+
+    id+'\", \"'+name+'\");';
     console.log(query)
     await con.promise().query(query);
     res.redirect('back')
@@ -20,9 +20,8 @@ router.post('/', async function(req, res, next) {
 
 router.put('/:id', async function(req, res, next) {
     var name = req.body.name
-    var price = req.body.price
-    var query = "UPDATE MenuItem " +
-    "SET name='"+name+"', price='"+price+"' "+
+    var query = "UPDATE Store " +
+    "SET name='"+name+"' "+
     "WHERE id = '"+req.params.id+"';"
     console.log(query)
     await con.promise().query(query);
@@ -30,7 +29,7 @@ router.put('/:id', async function(req, res, next) {
 });
 
 router.delete('/:id', async function(req, res, next) {
-    await con.promise().query('DELETE FROM MenuItem WHERE id = \"'+req.params.id+'\"');
+    await con.promise().query('DELETE FROM Store WHERE id = \"'+req.params.id+'\"');
     res.redirect('back')
 });
 

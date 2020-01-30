@@ -41,4 +41,15 @@ router.delete('/:id', async function (req, res, next) {
   res.redirect('back')
 });
 
+router.post('/address', async function (req, res, next) {
+  var content = req.body.content
+  var home_phone = req.body.home_phone
+  var customer = req.body.customer
+  var query = 'INSERT INTO Address(customer, home_phone, content) VALUES (\"' +
+    customer + '\", \"' + home_phone + '\", \"' + content + '\");';
+  console.log(query)
+  await con.promise().query(query);
+  res.redirect('back')
+});
+
 module.exports = router;

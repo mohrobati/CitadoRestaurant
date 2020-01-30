@@ -26,6 +26,39 @@ CREATE TABLE Address(
     PRIMARY KEY (content)
 );
 
+CREATE TABLE Delivery( 
+    code VARCHAR(20) NOT NULL,
+    f_name VARCHAR(20) NOT NULL,
+    l_name VARCHAR(20) NOT NULL,
+    mobile_phone VARCHAR(20) NOT NULL,
+    PRIMARY KEY (code)
+);
+
+CREATE TABLE Store(
+    id VARCHAR(20) NOT NULL,
+    name VARCHAR(40) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE GoodsItem(
+    id VARCHAR(20) NOT NULL,
+    name VARCHAR(40) NOT NULL,
+    price INT NOT NULL,
+    store VARCHAR(20) NOT NULL,
+    FOREIGN KEY (store) REFERENCES Store(id),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE StoreOrder(
+    id VARCHAR(20),
+    goods_item_id VARCHAR(20),
+    price INT,
+    FOREIGN KEY (goods_item_id) REFERENCES GoodsItem(id),
+    PRIMARY KEY (id, goods_item_id)
+);
+
+insert into StoreOrder(id, goods_item_id, price) values (1, "FK7rJAic", 1000);
+
 -- CREATE TABLE Factor( 
 --     id VARCHAR(20) NOT NULL,
 --     address VARCHAR(60),
@@ -34,37 +67,9 @@ CREATE TABLE Address(
 --     PRIMARY KEY (id)
 -- );
 
--- CREATE TABLE Delivery( 
---     code VARCHAR(20) NOT NULL,
---     f_name VARCHAR(20) NOT NULL,
---     l_name VARCHAR(20) NOT NULL,
---     mobile_phone VARCHAR(20) NOT NULL,
---     PRIMARY KEY (code)
--- );
-
--- CREATE TABLE GoodsItem(
---     id VARCHAR(20) NOT NULL,
---     name VARCHAR(40) NOT NULL,
---     price INT NOT NULL
---     PRIMARY KEY (id)
--- );
-
--- CREATE TABLE GoodsFactor( 
---     id VARCHAR(20) NOT NULL,
---     store VARCHAR(20) NOT NULL,
---     FOREIGN KEY (store) REFERENCES Store(id),
---     PRIMARY KEY (id)
--- );
-
--- CREATE TABLE Store(
---     id VARCHAR(20) NOT NULL,
---     name VARCHAR(40) NOT NULL,
---     PRIMARY KEY (id)
--- );
-
 -- -- Relations
 
--- CREATE TABLE CustomerOrders(
+-- CREATE TABLE CustomerOrder(
 --     factor_id VARCHAR(20),
 --     menu_item_id VARCHAR(20),
 --     customer_id VARCHAR(20),
@@ -75,11 +80,3 @@ CREATE TABLE Address(
 --     PRIMARY KEY (factor_id, menu_item_id)
 -- );
 
--- CREATE TABLE StoreOrders(
---     factor_id VARCHAR(20),
---     goods_item_id VARCHAR(20),
---     price INT,
---     FOREIGN KEY (factor_id) REFERENCES GoodsFactor(id),
---     FOREIGN KEY (goods_item_id) REFERENCES GoodsItem(id),
---     PRIMARY KEY (factor_id,goods_item_id)
--- );

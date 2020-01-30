@@ -3,9 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var indexRouter = require('./routes/index');
 var menuItemRouter = require('./routes/menuItem');
 var customerRouter = require('./routes/customer');
+var deliveryRouter = require('./routes/delivery');
+var storeRouter = require('./routes/store');
+var goodsItem = require('./routes/goodsItem');
+var storeOrders = require('./routes/storeOrders');
 var methodOverride = require('method-override');
 var con = require('./database')
 var app = express();
@@ -26,9 +29,12 @@ con.connect(function (err) {
   console.log("Connected!");
 });
 
-app.use('/', indexRouter);
 app.use('/menuItem', menuItemRouter);
 app.use('/customer', customerRouter);
+app.use('/delivery', deliveryRouter);
+app.use('/store', storeRouter);
+app.use('/goodsItem', goodsItem);
+app.use('/storeOrders', storeOrders);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
