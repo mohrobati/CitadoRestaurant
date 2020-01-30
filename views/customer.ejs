@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="stylesheets/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+
+<body>
+  <header>
+    <div class="row justify-content-center">
+      <div class="alert alert-primary m-3" role="alert">
+        <a href="">Customer Orders</a>
+      </div>
+      <div class="alert alert-primary m-3" role="alert">
+        <a href="">Store Orders</a>
+      </div>
+      <div class="alert alert-primary m-3" role="alert">
+        <a href="">Customers</a>
+      </div>
+      <div class="alert alert-primary m-3" role="alert">
+        <a href="">Reports</a>
+      </div>
+    </div>
+  </header>
+  <div id="spacer" style="height: 100px;background-color: gray;"></div>
+  <div id="customer">
+      <div class="container">
+          <h2 class="text-center m-3">مشتری</h2>
+          <div class="row justify-content-center">
+              <div class="my_col">
+                  <div class="card bg-success" style="width: 30rem;">
+                      <div class="card-body text-center">
+                        <form method="POST" action="/customer/">
+                            <div class="form-group text-white">
+                                  <label for="menu-item-name">افزودن مشتری جدید</label>
+                                  <input type="text" class="form-control mb-2" name="f_name" placeholder="نام">
+                                  <input type="text" class="form-control mb-2" name="l_name" placeholder="نام خانوادگی">
+                                  <input type="number" class="form-control mb-2" name="age" placeholder="سن">
+                                  <input type="text" class="form-control mb-2" name="mobile_phone" placeholder="شماره همراه">
+                                  <input type="text" class="form-control mb-2" name="code" placeholder="کد ملی">
+                                  <input type="submit" class="float-right btn btn-warning mx-3 mt-3" value="افزودن">
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row justify-content-center">
+              <% for(var i=0; i<customers.length; i++) { %>
+              <div class="my_col">
+                  <div class="card bg-white" border="1" style="width: 15rem;">
+                      <div class="card-body text-center">
+                          <form method="POST" action="/customer/<%=customers[i].code%>?_method=PUT">
+                              <input type="text" class="form-control mb-2" placeholder="نام" name="f_name" value="<%=customers[i].f_name%>">
+                              <input type="text" class="form-control mb-2" placeholder="نام خانوادگی" name="l_name" value="<%=customers[i].l_name%>">
+                              <input type="number" class="form-control mb-2" placeholder="سن" name="age" value="<%=customers[i].age%>">
+                              <input type="text" class="form-control mb-2" placeholder="شماره همراه" name="mobile_phone" value="<%=customers[i].mobile_phone%>">
+                              <input type="text" class="form-control mb-2" placeholder="کد ملی" name="code" value="<%=customers[i].code%>">
+                              <input type="submit" class="float-right btn btn-warning w-100 my-2" value="تغییر">
+                          </form>
+                          <form method="POST" action="/customer/<%=customers[i].code%>?_method=DELETE">
+                            <button class="btn btn-info w-100">حذف</button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+              <% } %>
+          </div>
+      </div>
+  </div>
+  
+</html>
