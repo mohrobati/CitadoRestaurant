@@ -8,7 +8,9 @@ var customerRouter = require('./routes/customer');
 var deliveryRouter = require('./routes/delivery');
 var storeRouter = require('./routes/store');
 var goodsItem = require('./routes/goodsItem');
-var storeOrders = require('./routes/storeOrders');
+var storeOrder = require('./routes/storeOrder');
+var customerOrder = require('./routes/customerOrder');
+var report = require('./routes/report');
 var methodOverride = require('method-override');
 var con = require('./database')
 var app = express();
@@ -34,7 +36,9 @@ app.use('/customer', customerRouter);
 app.use('/delivery', deliveryRouter);
 app.use('/store', storeRouter);
 app.use('/goodsItem', goodsItem);
-app.use('/storeOrders', storeOrders);
+app.use('/storeOrder', storeOrder);
+app.use('/customerOrder', customerOrder);
+app.use('/report', report);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

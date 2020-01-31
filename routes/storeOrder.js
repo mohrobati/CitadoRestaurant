@@ -5,7 +5,7 @@ var shortid = require('shortid');
 
 router.get('/', async function (req, res, next) {
     [storeOrders, fields] = await con.promise().query('select StoreOrder.id as store_order_id, GoodsItem.id as goods_item_id, GoodsItem.name as goods_item_name, StoreOrder.price as price, Store.id as store_id, Store.name as store_name from StoreOrder, GoodsItem, Store where StoreOrder.goods_item_id = GoodsItem.id and GoodsItem.store = Store.id;');
-    [goodsItems, fields] = await con.promise().query('SELECT GoodsItem.id as goods_item_id, GoodsItem.name as goods_item_name, GoodsItem.price as price, Store.name as store_name FROM GoodsItem, Store where GoodsItem.store = Store.id;');
+    [goodsItems, fields] = await con.promise().query('SELECT GoodsItem.id as goods_item_id, GoodsItem.name as goods_item_name, GoodsItem.price as price, Store.name as store_name FROM GoodsItem, Store where GoodsItem.store = Store.id and Store.available=1;');
     groupedStoreOrders = {}
     storeOrders.forEach((order) => {
         if (order.store_order_id in groupedStoreOrders) {
@@ -15,7 +15,7 @@ router.get('/', async function (req, res, next) {
             groupedStoreOrders[order.store_order_id].push(order)
         }
     })
-    res.render('storeOrders', { storeOrders: groupedStoreOrders, goodsItems: goodsItems })
+    res.render('storeOrder', { storeOrders: groupedStoreOrders, goodsItems: goodsItems })
 });
 
 router.post('/', async function (req, res, next) {
@@ -55,6 +55,16 @@ router.post('/', async function (req, res, next) {
             await con.promise().query(query);
         }
     }
+    res.redirect('back')
+});
+
+router.post('/addTable', async function (req, res, next) {
+    await con.promise().query('CREATE TABLE StoreOrder(id VARCHAR(20) NOT NULL, goods_item_id VARCHAR(20) NOT NULL, price INT NOT NULL, date DATE DEFAULT (CURRENT_DATE), FOREIGN KEY (goods_item_id) REFERENCES GoodsItem(id), PRIMARY KEY (id, goods_item_id));');
+    res.redirect('back')
+});
+
+router.post('/deleteTable', async function (req, res, next) {
+    await con.promise().query('DROP TABLE StoreOrder;');
     res.redirect('back')
 });
 

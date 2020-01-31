@@ -21,6 +21,16 @@ router.post('/', async function(req, res, next) {
     res.redirect('back')
 });
 
+router.post('/addTable', async function (req, res, next) {
+    await con.promise().query('CREATE TABLE GoodsItem(id VARCHAR(20) NOT NULL, name VARCHAR(40) NOT NULL, price INT NOT NULL, store VARCHAR(20) NOT NULL, FOREIGN KEY (store) REFERENCES Store(id), PRIMARY KEY (id));');
+    res.redirect('back')
+});
+
+router.post('/deleteTable', async function (req, res, next) {
+    await con.promise().query('DROP TABLE GoodsItem;');
+    res.redirect('back')
+});
+
 router.put('/:id', async function(req, res, next) {
     var name = req.body.name
     var price = req.body.price

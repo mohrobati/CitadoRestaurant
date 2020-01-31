@@ -19,6 +19,16 @@ router.post('/', async function (req, res, next) {
   res.redirect('back')
 });
 
+router.post('/addTable', async function (req, res, next) {
+  await con.promise().query('CREATE TABLE Delivery(code VARCHAR(20) NOT NULL, f_name VARCHAR(20) NOT NULL, l_name VARCHAR(20) NOT NULL, mobile_phone DECIMAL(11) NOT NULL CHECK (mobile_phone > 1000000000), PRIMARY KEY (code));');
+  res.redirect('back')
+});
+
+router.post('/deleteTable', async function (req, res, next) {
+  await con.promise().query('DROP TABLE Delivery;');
+  res.redirect('back')
+});
+
 router.put('/:id', async function (req, res, next) {
   var f_name = req.body.f_name
   var l_name = req.body.l_name

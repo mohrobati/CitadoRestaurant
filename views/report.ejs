@@ -1,0 +1,59 @@
+<% include ./header.ejs %>
+<div id="spacer" style="height: 100px;background-color: gray;"></div>
+<div id="customer">
+    <div class="container">
+        <h2 class="text-center m-3">گزارش</h2>
+        <div class="row justify-content-center">
+            <% for(date in results) { %>
+            <div class="my_col">
+                <div class="card bg-white" border="1" style="width: 15rem;">
+                    <div class="card-body text-center">
+                        <p class="mb-3"><%=date.substring(0,15)%></p>
+                        <h6 class="text-right">درآمد</h6>
+                        <input type="text" class="form-control mb-2" disabled value="<%=results[date]['totalIncome']%>">
+                        <h6 class="text-right">خرج</h6>
+                        <input type="text" class="form-control mb-2" disabled
+                            value="<%=results[date]['totalOutcome']%>">
+                        <h6 class="text-right">سود</h6>
+                        <input type="text" class="form-control mb-2" disabled
+                            value="<%=results[date]['totalBenefit']%>">
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <div class="row justify-content-center my-5">
+            <div class="container">
+                <table class="table table-secondary">
+                    <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col">Log</th>
+                            <th scope="col">Table</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i=0; i<logs.length; i++) { %>
+                        <tr>
+                            <% if(logs[i].type==='insert') { %>
+                            <td style="color: blue;"><%=logs[i].type%></td>
+                            <% } else if(logs[i].type==='update') { %>
+                            <td style="color: #ffff29;"><%=logs[i].type%></td>
+                            <% } else { %>
+                            <td style="color: red;"><%=logs[i].type%></td>
+                            <% } %>
+                            <td><%=logs[i].log%></td>
+                            <td><%=logs[i].mod_table%></td>
+                            <td><%=logs[i].date.toString().substring(0, 15)%></td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
