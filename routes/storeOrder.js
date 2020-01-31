@@ -58,7 +58,7 @@ router.post('/', async function (req, res, next) {
 });
 
 router.post('/addTable', async function (req, res, next) {
-    await con.promise().query('CREATE TABLE StoreOrder(id VARCHAR(20) NOT NULL, goods_item_id VARCHAR(20) NOT NULL, price INT NOT NULL, date DATE DEFAULT (CURRENT_DATE), FOREIGN KEY (goods_item_id) REFERENCES GoodsItem(id), PRIMARY KEY (id, goods_item_id));');
+    await con.promise().query('CREATE TABLE StoreOrder(id VARCHAR(20) NOT NULL, goods_item_name VARCHAR(20) NOT NULL, store VARCHAR(20) NOT NULL, price INT NOT NULL, date DATE DEFAULT (CURRENT_DATE), PRIMARY KEY (id, goods_item_name));');
     res.redirect('back')
 });
 

@@ -68,11 +68,19 @@ router.post('/', async function (req, res, next) {
             query = "SELECT f_name, l_name FROM Customer WHERE code = " + customer_id + ";";
             console.log(query)
             var [customer, fields] = await con.promise().query(query);
-            var customer_name = "'" + customer[0].f_name + " " + customer[0].l_name + "'"
+            var customer_name;
+            if(customer[0] !== undefined)
+                customer_name = "'" + customer[0].f_name + " " + customer[0].l_name + "'"
+            else
+                customer_name = "NULL"
+            var delivery_name;
             query = "SELECT f_name, l_name FROM Delivery WHERE code = " + delivery_id + ";";
             console.log(query)
             var [delivery, fields] = await con.promise().query(query);
-            var delivery_name = "'" + delivery[0].f_name + " " + delivery[0].l_name + "'"
+            if(delivery[0] !== undefined)
+                delivery_name = "'" + delivery[0].f_name + " " + delivery[0].l_name + "'"
+            else
+                delivery_name = "NULL"
             query = "INSERT INTO CustomerOrder(id, menu_item_name, customer_name, delivery_name, address, price)" +
                 " VALUES ('" + id + "', '" + menuItem[0].name + "', " + customer_name + ", " + delivery_name + ", " + address + ", " + menuItem[0].price + ");";
             console.log(query)
@@ -83,7 +91,7 @@ router.post('/', async function (req, res, next) {
 });
 
 router.post('/addTable', async function (req, res, next) {
-    await con.promise().query('CREATE TABLE CustomerOrder(id VARCHAR(20) NOT NULL, menu_item_id VARCHAR(20) NOT NULL, customer_id VARCHAR(20), delivery_id VARCHAR(20), address VARCHAR(60), price INT NOT NULL, date DATE DEFAULT (CURRENT_DATE), FOREIGN KEY (menu_item_id) REFERENCES MenuItem(id), FOREIGN KEY (customer_id) REFERENCES Customer(code), FOREIGN KEY (delivery_id) REFERENCES Delivery(code), FOREIGN KEY (address) REFERENCES Address(content), PRIMARY KEY (id, menu_item_id));');
+    await con.promise().query('CREATE TABLE CustomerOrder(id VARCHAR(20) NOT NULL, menu_item_name VARCHAR(60) NOT NULL, customer_name VARCHAR(20), delivery_name VARCHAR(20), address VARCHAR(60), price INT NOT NULL, date DATE DEFAULT (CURRENT_DATE), PRIMARY KEY (id, menu_item_name));');
     res.redirect('back')
 });
 
