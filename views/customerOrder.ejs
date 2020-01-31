@@ -1,5 +1,4 @@
 <% include ./header.ejs %> 
-    <div id="spacer" style="height: 100px;background-color: gray;"></div>
     <div id="address">
         <div class="container">
             <h2 class="text-center m-3"> فاکتور مشتری </h2>
@@ -53,7 +52,7 @@
                             <h6 class="text-center mb-3"><%=order%></h6>
                             <p>: مشتری</p>
                             <input type="text" class="form-control mb-2" name="store"
-                                value="<%=customerOrders[order][0]['customer_f_name']%> <%=customerOrders[order][0]['customer_l_name']%>"
+                                value="<%=customerOrders[order][0]['customer_name']%>"
                                 disabled>
                             <p>: سفارشات</p>
                             <div class="form-group">
@@ -68,7 +67,7 @@
                             </div>
                             <p>: پیک</p>
                             <input type="text" class="form-control mb-2" name="store"
-                                value="<%=customerOrders[order][0]['delivery_f_name']%> <%=customerOrders[order][0]['delivery_l_name']%>"
+                                value="<%=customerOrders[order][0]['delivery_name']%>"
                                 disabled>
                             <p>: آدرس</p>
                             <input type="text" class="form-control mb-4" name="store"

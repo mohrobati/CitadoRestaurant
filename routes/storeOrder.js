@@ -4,31 +4,33 @@ var con = require('../database');
 var shortid = require('shortid');
 
 router.get('/', async function (req, res, next) {
-    [storeOrders, fields] = await con.promise().query('select StoreOrder.id as store_order_id, GoodsItem.id as goods_item_id, GoodsItem.name as goods_item_name, StoreOrder.price as price, Store.id as store_id, Store.name as store_name from StoreOrder, GoodsItem, Store where StoreOrder.goods_item_id = GoodsItem.id and GoodsItem.store = Store.id;');
-    [goodsItems, fields] = await con.promise().query('SELECT GoodsItem.id as goods_item_id, GoodsItem.name as goods_item_name, GoodsItem.price as price, Store.name as store_name FROM GoodsItem, Store where GoodsItem.store = Store.id and Store.available=1;');
+    [storeOrders, fields] = await con.promise().query('select * from storeOrder');
+    [goodsItems, fields] = await con.promise().query('SELECT GoodsItem.name as goods_item_name, GoodsItem.price as price, Store.name as store_name FROM GoodsItem, Store where GoodsItem.store = Store.id and Store.available=1;');
     groupedStoreOrders = {}
     storeOrders.forEach((order) => {
-        if (order.store_order_id in groupedStoreOrders) {
-            groupedStoreOrders[order.store_order_id].push(order)
+        if (order.id in groupedStoreOrders) {
+            groupedStoreOrders[order.id].push(order)
         } else {
-            groupedStoreOrders[order.store_order_id] = []
-            groupedStoreOrders[order.store_order_id].push(order)
+            groupedStoreOrders[order.id] = []
+            groupedStoreOrders[order.id].push(order)
         }
     })
-    res.render('storeOrder', { storeOrders: groupedStoreOrders, goodsItems: goodsItems })
+    res.render('storeOrder', { 
+        storeOrders: groupedStoreOrders,
+        goodsItems: goodsItems })
 });
 
 router.post('/', async function (req, res, next) {
     var goodsItems = req.body.goodsItems
     store_tmp = ""
     err = false
+    if (!(Array.isArray(goodsItems))) {
+        goodsItems = [goodsItems]
+    }
     for (item in goodsItems) {
-        var query = "SELECT store FROM GoodsItem WHERE id = '" + goodsItems[item] + "';";
+        var query = "SELECT store FROM GoodsItem WHERE name = '" + goodsItems[item] + "';";
         var [store, fields] = await con.promise().query(query);
-        s = ""
-        for (var k in store) {
-            s = store[k].store
-        }
+        s = store[0].store
         if (store_tmp === "") {
             store_tmp = s;
         } else {
@@ -37,20 +39,17 @@ router.post('/', async function (req, res, next) {
             }
         }
     }
+    
     if (!err) {
+        var query = "SELECT name FROM Store WHERE id = '" + store_tmp + "';";
+        var [store, fields] = await con.promise().query(query);
         var id = shortid.generate()
-        if (!(Array.isArray(goodsItems))) {
-            goodsItems = [goodsItems]
-        }
         for (item in goodsItems) {
-            var query = "SELECT price FROM GoodsItem WHERE id = '" + goodsItems[item] + "';";
+            console.log(goodsItems[item])
+            var query = "SELECT price FROM GoodsItem WHERE name = '" + goodsItems[item] + "';";
             var [price, fields] = await con.promise().query(query);
-            var p = 0
-            for (var k in price) {
-                p = price[k].price
-            }
-            query = 'INSERT INTO StoreOrder(id, goods_item_id, price) VALUES (\"' +
-                id + '\", \"' + goodsItems[item] + '\", ' + p + ");";
+            query = 'INSERT INTO StoreOrder(id, goods_item_name, store, price) VALUES (\"' +
+                id + '\", \"' + goodsItems[item] + '\", \"' + store[0].name + '\", '+ price[0].price + ");";
             console.log(query)
             await con.promise().query(query);
         }

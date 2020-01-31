@@ -4,24 +4,21 @@ var con = require('../database');
 var shortid = require('shortid');
 
 router.get('/', async function (req, res, next) {
-    let customerOrders;
-    [ordersWithoutCustomer, fields] = await con.promise().query('SELECT customerOrder.id as customer_order_id, menuItem.id as menu_item_id, menuItem.name as menu_item_name, customerOrder.price as price from CustomerOrder, menuItem WHERE customerOrder.menu_item_id = menuItem.id AND customerOrder.customer_id IS NULL;');
-    [ordersWithoutDelivery, fields] = await con.promise().query('SELECT customerOrder.id as customer_order_id, menuItem.id as menu_item_id, menuItem.name as menu_item_name, customer.code as customer_id, customer.f_name as customer_f_name, customer.l_name as customer_l_name, customerOrder.delivery_id, address, customerOrder.price as price from CustomerOrder, menuItem, Customer WHERE customerOrder.menu_item_id = menuItem.id AND customerOrder.customer_id = customer.code AND customerOrder.delivery_id IS NULL;');
-    [ordersWithDelivery, fields] = await con.promise().query('SELECT customerOrder.id as customer_order_id, menuItem.id as menu_item_id, menuItem.name as menu_item_name, customer.code as customer_id, customer.f_name as customer_f_name, customer.l_name as customer_l_name, delivery.code as delivery_id, delivery.f_name as delivery_f_name, delivery.l_name as delivery_l_name, address, customerOrder.price as price from CustomerOrder, menuItem, Customer, Delivery WHERE customerOrder.menu_item_id = menuItem.id AND customerOrder.customer_id = customer.code AND customerOrder.delivery_id = delivery.code;');
+    [customerOrders, fields] = await con.promise().query('SELECT * from customerOrder');
     [addresses, fields] = await con.promise().query('SELECT customer.code, f_name, l_name, content from Customer, Address WHERE customer.code = address.customer');
     [customers, fields] = await con.promise().query('SELECT * from Customer;');
     [menuItems, fields] = await con.promise().query('SELECT * from MenuItem;');
     [deliveries, fields] = await con.promise().query('SELECT * from Delivery;');
-    customerOrders = [...ordersWithoutCustomer, ...ordersWithoutDelivery, ...ordersWithDelivery]
     let groupedCustomerOrders = {}
     customerOrders.forEach((order) => {
-        if (order.customer_order_id in groupedCustomerOrders) {
-            groupedCustomerOrders[order.customer_order_id].push(order)
+        if (order.id in groupedCustomerOrders) {
+            groupedCustomerOrders[order.id].push(order)
         } else {
-            groupedCustomerOrders[order.customer_order_id] = []
-            groupedCustomerOrders[order.customer_order_id].push(order)
+            groupedCustomerOrders[order.id] = []
+            groupedCustomerOrders[order.id].push(order)
         }
     })
+    console.log(groupedCustomerOrders)
     res.render('customerOrder', {
         customerOrders: groupedCustomerOrders,
         customers: customers,
@@ -46,6 +43,7 @@ router.post('/', async function (req, res, next) {
         delivery_id = "'" + delivery_id + "'"
         address = "'" + address + "'"
         query = "SELECT customer FROM Address WHERE content = " + address + ";"
+        console.log(query)
         var [addressCustomer, fields] = await con.promise().query(query);
         var a = 0
         for (var k in addressCustomer) {
@@ -64,14 +62,19 @@ router.post('/', async function (req, res, next) {
             menu_items_id = [menu_items_id]
         }
         for (var item_id in menu_items_id) {
-            var query = "SELECT price FROM MenuItem WHERE id = '" + menu_items_id[item_id] + "';";
-            var [price, fields] = await con.promise().query(query);
-            var p = 0
-            for (var k in price) {
-                p = price[k].price
-            }
-            query = "INSERT INTO CustomerOrder(id, menu_item_id, customer_id, delivery_id, address, price)" +
-                " VALUES ('" + id + "', '" + menu_items_id[item_id] + "', " + customer_id + ", " + delivery_id + ", " + address + ", " + p + ");";
+            var query = "SELECT name, price FROM MenuItem WHERE id = '" + menu_items_id[item_id] + "';";
+            console.log(query)
+            var [menuItem, fields] = await con.promise().query(query);
+            query = "SELECT f_name, l_name FROM Customer WHERE code = " + customer_id + ";";
+            console.log(query)
+            var [customer, fields] = await con.promise().query(query);
+            var customer_name = "'" + customer[0].f_name + " " + customer[0].l_name + "'"
+            query = "SELECT f_name, l_name FROM Delivery WHERE code = " + delivery_id + ";";
+            console.log(query)
+            var [delivery, fields] = await con.promise().query(query);
+            var delivery_name = "'" + delivery[0].f_name + " " + delivery[0].l_name + "'"
+            query = "INSERT INTO CustomerOrder(id, menu_item_name, customer_name, delivery_name, address, price)" +
+                " VALUES ('" + id + "', '" + menuItem[0].name + "', " + customer_name + ", " + delivery_name + ", " + address + ", " + menuItem[0].price + ");";
             console.log(query)
             await con.promise().query(query);
         }

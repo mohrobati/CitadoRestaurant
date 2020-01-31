@@ -1,7 +1,4 @@
 <% include ./header.ejs %> 
-
-    <div id="spacer" style="height: 100px;background-color: gray;"></div>
-
     <div id="address">
         <div class="container">
             <h2 class="text-center m-3"> فاکتور فروشگاه</h2>
@@ -15,7 +12,7 @@
                                     <br>
                                     <select name="goodsItems" multiple class="form-control my-2">
                                         <% for(item in goodsItems) { %>
-                                        <option value="<%=goodsItems[item]['goods_item_id']%>"><%=goodsItems[item]['goods_item_name']%> -
+                                        <option value="<%=goodsItems[item]['goods_item_name']%>"><%=goodsItems[item]['goods_item_name']%> -
                                             <%=goodsItems[item]['price']%> -
                                             <%=goodsItems[item]['store_name']%></option>
                                         <% } %>
@@ -34,7 +31,7 @@
                         <div class="card-body text-center">
                             <h6 class="text-center mb-3"><%=order%></h6>
                             <input type="text" class="form-control mb-2" name="store"
-                                value="<%=storeOrders[order][0]['store_name']%>" disabled>
+                                value="<%=storeOrders[order][0]['store']%>" disabled>
                             <div class="form-group">
                                 <select multiple disabled class="form-control">
                                     <% var total_price=0 %>
